@@ -1,0 +1,29 @@
+name: Run Checks
+on: push
+
+jobs:
+  main:
+    name: Main
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/setup-python@v1
+    - uses: dschep/install-poetry-action@v1.3
+    
+    - name: Install
+      run: poetry install
+
+    - name: Black
+      run: poetry run black --target-version py36 seatingchart.py --check
+
+    - name: Black Tests
+      run: poetry run black --target-version py36 tests --check
+
+    - name: Flake8
+      run: poetry run flake8 "--ignore=E203,E402,E501,F405,W503,W504" seatingchart.py
+
+    - name: Flake8 Tests
+      run: poetry run flake8 "--ignore=E203,E402,E501,F405,W503,W504" tests
+
+    - name: Pytest
+      run: poetry run pytest
